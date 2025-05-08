@@ -105,11 +105,9 @@ WEB-DEV-API/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_twitter)
+Your Name -Sukdev Bansal
 Project Link: [https://github.com/Sukh-1705/WEB-DEV-API](https://github.com/Sukh-1705/WEB-DEV-API) 
