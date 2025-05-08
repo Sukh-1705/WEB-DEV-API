@@ -1,0 +1,250 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Shopping Cart - Foody{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-section {
+        padding: 50px 0;
+    }
+    .cart-item {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        transition: all 0.3s;
+    }
+    .cart-item:hover {
+        transform: translateY(-2px);
+    }
+    .cart-item img {
+        border-radius: 10px;
+        height: 100px;
+        object-fit: cover;
+    }
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ddd;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .quantity-btn:hover {
+        background: #3CB815;
+        color: white;
+        border-color: #3CB815;
+    }
+    .quantity-input {
+        width: 50px;
+        text-align: center;
+        margin: 0 10px;
+        border: none;
+        background: transparent;
+    }
+    .cart-summary {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 20px;
+    }
+    .saved-items {
+        margin-top: 40px;
+    }
+    .note-textarea {
+        resize: none;
+        font-size: 0.9rem;
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 50px 20px;
+    }
+    .empty-cart i {
+        font-size: 4rem;
+        color: #ddd;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Shopping Cart</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Cart</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container cart-section">
+    {% if messages %}
+    <div class="messages mb-4">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-lg-8">
+            <h3 class="mb-4">Shopping Cart</h3>
+            {% for item in cart_items %}
+            <div class="cart-item bg-white p-3 mb-3 rounded shadow-sm">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'img/products/no-image.jpg' %}{% endif %}" alt="{{ item.product.name }}" class="img-fluid">
+                    </div>
+                    <div class="col-md-6">
+                        <h5>{{ item.product.name }}</h5>
+                        <p class="text-primary mb-2">₹{{ item.product.get_discounted_price }}</p>
+                        {% if item.product.discount %}
+                        <small class="text-muted text-decoration-line-through">₹{{ item.product.price }}</small>
+                        {% endif %}
+                        <div class="quantity-controls">
+                            <form method="POST" action="{% url 'update_cart' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control d-inline-block" style="width: 80px;">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-end">
+                        <p class="mb-2">Total: ₹{{ item.get_total_price }}</p>
+                        <div class="btn-group">
+                            <form method="POST" action="{% url 'save_for_later' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-primary me-2">Save for Later</button>
+                            </form>
+                            <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <textarea class="form-control note-textarea" rows="2" 
+                                placeholder="Add a note about this item (optional)"
+                                data-item-id="{{ item.id }}">{{ item.notes }}</textarea>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if saved_items %}
+            <div class="saved-items">
+                <h4>Saved for Later</h4>
+                {% for item in saved_items %}
+                <div class="cart-item p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'img/products/no-image.jpg' %}{% endif %}" alt="{{ item.product.name }}" class="img-fluid">
+                        </div>
+                        <div class="col-md-4">
+                            <h5>{{ item.product.name }}</h5>
+                            <p class="text-primary mb-0">₹{{ item.product.get_discounted_price }}</p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <form method="POST" action="{% url 'save_for_later' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-primary me-2">Move to Cart</button>
+                            </form>
+                            <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <div class="cart-summary">
+                <h4>Order Summary</h4>
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal</span>
+                    <span>₹{{ cart.get_total_price }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-4">
+                    <strong>Total</strong>
+                    <strong>₹{{ cart.get_total_price }}</strong>
+                </div>
+                <a href="{% url 'checkout' %}" class="btn btn-primary w-100">Proceed to Checkout</a>
+                <a href="{% url 'product' %}" class="btn btn-outline-primary w-100 mt-2">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-cart">
+        <i class="fa fa-shopping-cart"></i>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added anything to your cart yet.</p>
+        <a href="{% url 'product' %}" class="btn btn-primary">
+            <i class="fa fa-shopping-bag me-2"></i>Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let noteTimeout;
+    
+    document.querySelectorAll('.note-textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            clearTimeout(noteTimeout);
+            const itemId = this.dataset.itemId;
+            const note = this.value;
+            
+            noteTimeout = setTimeout(() => {
+                fetch(`/cart/note/${itemId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: `note=${encodeURIComponent(note)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showPopupMessage('Success', 'Note updated', 'success');
+                    }
+                });
+            }, 500);
+        });
+    });
+});
+</script>
+{% endblock %}

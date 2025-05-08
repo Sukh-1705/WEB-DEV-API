@@ -1,0 +1,125 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{% if product %}Edit Product{% else %}Add Product{% endif %}</h2>
+    <a href="{% url 'admin_products' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Products
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.name.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.description.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.category.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.price.id_for_label }}" class="form-label">Price</label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.price.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="{{ form.stock.id_for_label }}" class="form-label">Stock</label>
+                                {{ form.stock }}
+                                {% if form.stock.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.stock.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    {{ form.is_available }}
+                                    <label class="form-check-label" for="{{ form.is_available.id_for_label }}">
+                                        Available for sale
+                                    </label>
+                                </div>
+                                {% if form.is_available.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.is_available.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Product Image</label>
+                        {% if product and product.image %}
+                            <div class="mb-2">
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                        {% endif %}
+                        {{ form.image }}
+                        {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.image.errors|join:", " }}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Recommended size: 800x800 pixels
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 
+                    {% if product %}Save Changes{% else %}Create Product{% endif %}
+                </button>
+                <a href="{% url 'admin_products' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

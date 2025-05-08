@@ -1,0 +1,141 @@
+<!-- <!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Signup</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		
+		<link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+
+		
+		 <link rel="stylesheet" href="{{ url_for('static', filename='css/Signup.css') }}">
+        
+	</head>
+
+	<body>
+
+
+
+		<div class="wrapper" style="background-color: black; background-image: url(https://i.pinimg.com/736x/76/de/e8/76dee87c00578cc3a0621584fd3a20e3.jpg);background-size: cover; background-position: center;">
+			<div class="inner">
+				<div class="image-holder">
+					<img src="{{ url_for('static', filename='images/background.jpg') }}" alt="" height="400px" style="margin-top: 30px;">
+				</div>
+				<form action="{{ url_for('signup') }}" method="POST" id="auth-form">
+					<h3>Sign Up Form</h3>
+					<div class="form-group">
+						<input type="text" placeholder="First Name" class="form-control" name="firstname">
+						<input type="text" placeholder="Last Name" class="form-control" name="lastname">
+					</div>
+					<div class="form-wrapper">
+						<input type="text" placeholder="Username" class="form-control" name="username">
+						<i class="zmdi zmdi-account"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="text" placeholder="Email Address" class="form-control" name="email">
+						<i class="zmdi zmdi-email"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="password" placeholder="Password" class="form-control" name="password">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<div class="form-wrapper">
+						<input type="password" placeholder="Confirm Password" class="form-control" name="confirmpassword">
+						<i class="zmdi zmdi-lock"></i>
+					</div>
+					<a href="{{ url_for('home') }}" style="display: inline-block; padding: 10px 20px; background-color: orange; color: white; text-decoration: none; border-radius: 5px; text-align: center;">
+						Register
+						<i class="zmdi zmdi-arrow-right"></i>
+					</a>
+					
+				</form>
+			</div>
+		</div>
+		
+
+
+
+
+
+	
+	</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Signup</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/Signup.css') }}">
+        <style>
+            .flash-message {
+                padding: 10px;
+                margin: 10px 0;
+                border-radius: 5px;
+                text-align: center;
+            }
+            .error {
+                background-color: #ffebee;
+                color: #c62828;
+            }
+            .success {
+                background-color: #e8f5e9;
+                color: #2e7d32;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper" style="background-color: black; background-image: url(https://i.pinimg.com/736x/76/de/e8/76dee87c00578cc3a0621584fd3a20e3.jpg);background-size: cover; background-position: center;">
+            <div class="inner">
+                <div class="image-holder">
+                    <img src="{{ url_for('static', filename='images/background.jpg') }}" alt="" height="400px" style="margin-top: 30px;">
+                </div>
+                <form action="{{ url_for('signup') }}" method="POST">
+                    <h3>Sign Up Form</h3>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="flash-message {{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    
+                    <div class="form-group">
+                        <input type="text" placeholder="First Name" class="form-control" name="firstname" required>
+                        <input type="text" placeholder="Last Name" class="form-control" name="lastname" required>
+                    </div>
+                    <div class="form-wrapper">
+                        <input type="text" placeholder="Username" class="form-control" name="username" required>
+                        <i class="zmdi zmdi-account"></i>
+                    </div>
+                    <div class="form-wrapper">
+                        <input type="email" placeholder="Email Address" class="form-control" name="email" required>
+                        <i class="zmdi zmdi-email"></i>
+                    </div>
+                    <div class="form-wrapper">
+                        <input type="password" placeholder="Password" class="form-control" name="password" required>
+                        <i class="zmdi zmdi-lock"></i>
+                    </div>
+                    <div class="form-wrapper">
+                        <input type="password" placeholder="Confirm Password" class="form-control" name="confirmpassword" required>
+                        <i class="zmdi zmdi-lock"></i>
+                    </div>
+                    
+                    <a href="{{url_for('login')}}"><button type="submit" style="background-color: orange; border: none; padding: 15px 30px; color: white; border-radius: 5px; cursor: pointer; width: 100%;">
+                        Register
+                        <i class="zmdi zmdi-arrow-right"></i>
+                    </button></a>
+
+                    <div style="text-align: center; margin-top: 15px;">
+                        <p style="color: white;">Already have an account? <a href="{{ url_for('login') }}" style="color: orange; text-decoration: none;">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

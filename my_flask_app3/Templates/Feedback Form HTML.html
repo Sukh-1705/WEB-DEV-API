@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>
+            Feedback
+        </title>
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Feedback Form CSS.css') }}">
+
+        <script src="https://kit.fontawesome.com/9088cc6401.js" crossorigin="anonymous"></script>
+        
+        <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='images/favicon.ico') }}"/>
+
+    </head>
+
+    <body>
+
+    <div class="rating-css">
+
+        <div style="font-family: 'Poppins', sans-serif;">
+            Feedback
+            <br>
+            Form
+        </div>
+
+        <div class="star-icon">
+
+            <input type="radio" name="rating1" id="rating1">
+            <label for="rating1" class="fa fa-star"></label>
+
+            <input type="radio" name="rating1" id="rating2">
+            <label for="rating2" class="fa fa-star"></label>
+
+            <input type="radio" name="rating1" id="rating3">
+            <label for="rating3" class="fa fa-star"></label>
+
+            <input type="radio" name="rating1" id="rating4">
+            <label for="rating4" class="fa fa-star"></label>
+
+            <input type="radio" name="rating1" id="rating5">
+            <label for="rating5" class="fa fa-star"></label>
+
+            <button type="submit" class="btn">
+                <a href="{{ url_for('feedback') }}" style="color: white; text-decoration: none;">Submit</a>
+            </button>
+            
+            
+        </div>
+        
+    </div>
+
+    </body>
+    
+</html>

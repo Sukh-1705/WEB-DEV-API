@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+
+    <title>
+        Office Products
+    </title>
+
+    <script src="https://kit.fontawesome.com/5471644867.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Baby Care Category Page CSS.css') }}">
+    
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='favicon.ico') }}"/>
+
+    <body>
+
+        <section id="popular-product">
+            <!--heading-----------> 
+            <div class="product-heading">
+                <h2 class="fruits-heading">Office Products</h2>
+            </div>
+            <!--box-container------> 
+            <div class="product-container">
+                <!--box----------> 
+                <div class="product-box" style="height: 95%;"> 
+                    <img alt="Kangaroo Stapler No.-10" src="{{ url_for('static', filename='images/Stapler.jpg') }}"> 
+                    <strong>Kangaroo Stapler No.-10</strong> 
+                    <span class="quantity">5</span> 
+                    <span class="price">Rs. 210</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+                <!--box----------> 
+                <div class="product-box" style="height: 95%;"> 
+                    <img alt="Kangaroo Punching Machine" src="{{ url_for('static', filename='images/Puncher.jpg') }}"> 
+                    <strong>Kangaroo Punching Machine</strong> 
+                    <span class="quantity">1</span> 
+                    <span class="price">Rs. 142</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+                <!--box----------> 
+                <div class="product-box" style="height: 95%;"> 
+                    <img alt="Natraj HB Pencils" src="{{ url_for('static', filename='images/Pencils.jpg') }}"> 
+                    <strong>Natraj HB Pencils</strong> 
+                    <span class="quantity">Pack of 10</span> 
+                    <span class="price">Rs. 300</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+                <!--box----------> 
+                <div class="product-box"> 
+                    <img alt="Natraj Ball Pens" src="{{ url_for('static', filename='images/Pens.jpg') }}"> 
+                    <strong>Natraj Ball Pens</strong> 
+                    <span class="quantity">Pack of 10</span> 
+                    <span class="price">Rs. 167</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+                <!--box----------> 
+                <div class="product-box"> 
+                    <img alt="Post It Sticky Notes" src="{{ url_for('static', filename='images/Sticky Notes.jpg') }}"> 
+                    <strong>Post It Sticky Notes</strong> 
+                    <span class="quantity">Pack of 6</span> 
+                    <span class="price">Rs. 358</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+                <!--box----------> 
+                <div class="product-box"> 
+                    <img alt="Kangaroo Stapler Pins No.-10" src="{{ url_for('static', filename='images/Pins.jpg') }}"> 
+                    <strong>Kangaroo Stapler Pins No.-10</strong> 
+                    <span class="quantity">Pack of 5</span> 
+                    <span class="price">Rs. 237</span>
+                    <!--cart-btn-------> 
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn" style="text-decoration: none;">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart 
+                    </a> 
+                    <!--like-btn-------> 
+                    <a class="like-btn" style="text-decoration: none;"> 
+                        <i class="far fa-heart"></i> 
+                    </a> 
+                </div>
+            </div>
+        </section>
+
+    </body>
+
+</html>

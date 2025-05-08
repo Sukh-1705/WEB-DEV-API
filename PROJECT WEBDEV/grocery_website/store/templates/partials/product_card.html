@@ -1,0 +1,36 @@
+{% load static %}
+<div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+    <div class="product-item bg-light mb-4 h-100 d-flex flex-column">
+        <div class="product-img position-relative overflow-hidden">
+            {% if product.image %}
+                <img class="img-fluid w-100" style="height: 250px; object-fit: cover;" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img class="img-fluid w-100" style="height: 250px; object-fit: cover;" src="{% static 'img/products/no-image.jpg' %}" alt="{{ product.name }}">
+            {% endif %}
+            {% if product.discount %}
+                <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">-{{ product.discount }}%</div>
+            {% endif %}
+            <div class="product-action">
+                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-heart"></i></a>
+                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+            </div>
+        </div>
+        <div class="text-center py-4 flex-grow-1">
+            <a class="h6 text-decoration-none text-truncate" href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+            <div class="d-flex align-items-center justify-content-center mt-2">
+                <h5>₹{{ product.get_discounted_price }}</h5>
+                {% if product.discount %}
+                    <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 mt-auto">
+            <div class="d-flex justify-content-center align-items-center">
+                <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm text-dark p-0">
+                    <i class="fa fa-eye text-primary mr-1"></i>View detail
+                </a>
+            </div>
+        </div>
+    </div>
+</div> 

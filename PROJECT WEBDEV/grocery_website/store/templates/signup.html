@@ -1,0 +1,164 @@
+{% extends 'layouts/auth_base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - Foody{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'img/carousel-1.jpg' %}") center/cover no-repeat fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        padding: 40px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    .auth-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .auth-header h1 {
+        color: var(--bs-primary);
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        margin-bottom: 5px;
+    }
+    .form-text {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-bottom: 15px;
+    }
+    .btn-auth {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    .auth-footer {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .auth-footer a {
+        color: var(--bs-primary);
+        text-decoration: none;
+    }
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    .form-check {
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>F<span class="text-secondary">oo</span>dy</h1>
+            <p>Create your account and start shopping!</p>
+        </div>
+        
+        {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'signuppage' %}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form.first_name }}
+                    {% if form.first_name.help_text %}
+                    <div class="form-text">{{ form.first_name.help_text }}</div>
+                    {% endif %}
+                    {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form.last_name }}
+                    {% if form.last_name.help_text %}
+                    <div class="form-text">{{ form.last_name.help_text }}</div>
+                    {% endif %}
+                    {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="mb-3">
+                {{ form.email }}
+                {% if form.email.help_text %}
+                <div class="form-text">{{ form.email.help_text }}</div>
+                {% endif %}
+                {% if form.email.errors %}
+                <div class="error-message">{{ form.email.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.phone }}
+                {% if form.phone.help_text %}
+                <div class="form-text">{{ form.phone.help_text }}</div>
+                {% endif %}
+                {% if form.phone.errors %}
+                <div class="error-message">{{ form.phone.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                <div class="form-text">{{ form.password1.help_text }}</div>
+                {% endif %}
+                {% if form.password1.errors %}
+                <div class="error-message">{{ form.password1.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                {{ form.password2 }}
+                {% if form.password2.help_text %}
+                <div class="form-text">{{ form.password2.help_text }}</div>
+                {% endif %}
+                {% if form.password2.errors %}
+                <div class="error-message">{{ form.password2.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-auth">Create Account</button>
+        </form>
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{% url 'loginpage' %}">Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,296 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Checkout - Foody{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-section {
+        padding-top: 120px;
+        padding-bottom: 80px;
+    }
+    .card {
+        border: none;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    .card-body {
+        padding: 35px;
+    }
+    .form-group {
+        margin-bottom: 25px;
+    }
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 12px;
+        color: #333;
+        display: block;
+        font-size: 1.1rem;
+    }
+    .form-control {
+        padding: 14px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+    .form-control:focus {
+        border-color: #3CB815;
+        box-shadow: 0 0 0 0.2rem rgba(60, 184, 21, 0.25);
+    }
+    h4 {
+        color: #333;
+        margin-bottom: 35px;
+        margin-top: 35px;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+    h2 {
+        font-size: 2.2rem;
+        margin-bottom: 40px;
+        color: #333;
+        font-weight: 600;
+    }
+    .btn-primary {
+        background-color: #3CB815;
+        border-color: #3CB815;
+        padding: 14px 35px;
+        font-weight: 500;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        margin-top: 20px;
+    }
+    .btn-primary:hover {
+        background-color: #2f9010;
+        border-color: #2f9010;
+    }
+    .order-summary {
+        background: #f8f9fa;
+        padding: 35px;
+        border-radius: 10px;
+    }
+    .payment-method {
+        border: 1px solid #dee2e6;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .payment-method.selected {
+        border-color: #3CB815;
+        background-color: #f8fff8;
+    }
+    .alert {
+        border-radius: 8px;
+        margin-bottom: 30px;
+        padding: 15px 20px;
+    }
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    .is-invalid:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    .order-summary h4 {
+        margin-top: 0;
+    }
+    .order-summary .d-flex {
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+    .order-summary hr {
+        margin: 25px 0;
+    }
+    .order-summary .d-flex.justify-content-between:last-child {
+        margin-top: 25px;
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Checkout</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a class="text-body" href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Checkout</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="checkout-section">
+    <div class="container">
+        {% if messages %}
+        <div class="messages mb-4">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if cart and cart.items.exists %}
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Shipping Address</h4>
+                        <form method="POST" action="{% url 'place_order' %}" id="checkoutForm">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label>Full Name:</label>
+                                <input type="text" name="full_name" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Address Line 1:</label>
+                                <input type="text" name="address_line1" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Address Line 2 (Optional):</label>
+                                <input type="text" name="address_line2" class="form-control">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>City:</label>
+                                <input type="text" name="city" id="city" class="form-control" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>State:</label>
+                                <input type="text" name="state" id="state" class="form-control" required readonly>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Postal Code:</label>
+                                <input type="text" name="postal_code" class="form-control" required 
+                                       pattern="[0-9]{6}" maxlength="6" 
+                                       title="Please enter a valid 6-digit postal code">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label>Phone Number:</label>
+                                <input type="tel" name="phone" class="form-control" required 
+                                       pattern="[0-9]{10}" maxlength="10"
+                                       title="Please enter a valid 10-digit phone number">
+                            </div>
+                            
+                            <h4 class="mt-4">Payment Method</h4>
+                            <div class="form-group mb-3">
+                                <select name="payment_method" class="form-control" required>
+                                    <option value="">Select Payment Method</option>
+                                    <option value="cod">Cash on Delivery</option>
+                                    <option value="card">Credit/Debit Card</option>
+                                    <option value="netbanking">Net Banking</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Place Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>Order Summary</h4>
+                        {% for item in cart.items.all %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                            <span>₹{{ item.get_total_price }}</span>
+                        </div>
+                        {% endfor %}
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Total:</strong>
+                            <strong>₹{{ cart.get_total_price }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <p>Your cart is empty. <a href="{% url 'product' %}" class="btn btn-primary">Continue Shopping</a></p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if messages %}
+<div class="position-fixed bottom-0 right-0 p-3" style="z-index: 5; right: 0; bottom: 0;">
+    {% for message in messages %}
+    <div class="toast show bg-success text-white" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
+        <div class="toast-body">
+            {{ message }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-hide toasts after 3 seconds
+    setTimeout(function() {
+        $('.toast').toast('hide');
+    }, 3000);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('checkoutForm');
+        const cityInput = document.getElementById('city');
+        const stateInput = document.getElementById('state');
+
+        // City-State auto-detection
+        if (cityInput) {
+            cityInput.addEventListener('blur', async function() {
+                if (this.value.trim()) {
+                    try {
+                        const response = await fetch(`https://api.postalpincode.in/postoffice/${this.value}`);
+                        const data = await response.json();
+                        if (data[0].Status === 'Success') {
+                            const postOffice = data[0].PostOffice[0];
+                            stateInput.value = postOffice.State;
+                        }
+                    } catch (error) {
+                        console.error('Error fetching state:', error);
+                    }
+                }
+            });
+        }
+
+        // Form validation
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Basic form validation
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else if (field.pattern && !new RegExp(field.pattern).test(field.value)) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+
+                if (isValid) {
+                    form.submit();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,412 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Profile CSS.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='favicon.ico') }}"/>
+</head>
+<body>
+    <div class="container">
+        <div class="leftbox">
+            <nav>
+                <a onclick="tabs(0)" class="tab active">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a onclick="tabs(1)" class="tab">
+                    <i class="fas fa-truck"></i>
+                </a>
+                <a onclick="tabs(2)" class="tab">
+                    <i class="fas fa-calendar-alt"></i>
+                </a>
+                <a onclick="tabs(3)" class="tab">
+                    <i class="fas fa-lock"></i>
+                </a>
+                <a onclick="tabs(4)" class="tab">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </nav>
+        </div>
+        <div class="rightbox">
+            <div class="profile tabShow active">
+                <h1>Personal Information</h1>
+                <h2>Name</h2>
+                <input type="text" class="input" value="Dheeraj Sharma">
+                <h2>Birthday</h2>
+                <input type="text" class="input" value="August 26, 1990">
+                <h2>Gender</h2>
+                <input type="text" class="input" value="Male">
+                <h2>Email</h2>
+                <input type="email" class="input" value="dheerajsharma@gmail.com">
+                <h2>Password</h2>
+                <input type="password" class="input" value="********">
+                <button class="btn">Update</button>
+            </div>
+            <div class="Payment tabShow">
+                <h1>Shipment Information</h1>
+                <h2>Billing Address</h2>
+                <input type="text" class="input" placeholder="402, Sector 19, Noida, Uttar Pradesh">
+                <h2>Pincode</h2>
+                <input type="text" class="input" placeholder="190125">
+                <h2>Last Order Shipped On</h2>
+                <input type="text" class="input" placeholder="January 10, 2022">
+                <h2>Redeem Card</h2>
+                <input type="text" class="input" placeholder="enter gift code">
+                <button class="btn">Update</button>
+            </div>
+            <div class="Subscription tabShow">
+                <h1>Subscription Information</h1>
+                <h2>Payment Date</h2>
+                <p>December 10, 2021</p>
+                <h2>Date of Next Payment</h2>
+                <p>December 10, 2022</p>
+                <h2>Plan</h2>
+                <p>Yearly</p>
+                <button class="btn">Update</button>
+            </div>
+            <div class="Privacy tabShow">
+                <h1>Privacy Settings</h1>
+                <h2>Manage Email Notification</h2>
+                <p><input type="checkbox" checked> Receive order notifications</p>
+                <h2>Manage Privacy Settings</h2>
+                <p><input type="checkbox" checked> Share usage data</p>
+                <h2>Terms Of Use</h2>
+                <p>By using this service, you agree to our <a href="#">Terms of Service</a></p>
+                <button class="btn">Update</button>
+            </div>
+            <div class="settings tabShow">
+                <h1>Account Settings</h1>
+                <h2>Hold Subscription</h2>
+                <p><button class="btn-small">Hold</button></p>
+                <h2>Cancel Subscription</h2>
+                <p><button class="btn-small btn-danger">Cancel</button></p>
+                <h2>Your Devices</h2>
+                <p>Desktop (Chrome) - Last used today</p>
+                <h2>Referrals</h2>
+                <p>Share code: <strong>DS2022REF</strong></p>
+                <button class="btn">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const tabBtn = document.querySelectorAll(".tab");
+        const tabContent = document.querySelectorAll(".tabShow");
+
+        function tabs(panelIndex) {
+            tabContent.forEach(content => {
+                content.style.display = "none";
+            });
+            tabContent[panelIndex].style.display = "block";
+            
+            tabBtn.forEach(btn => {
+                btn.classList.remove("active");
+            });
+            tabBtn[panelIndex].classList.add("active");
+        }
+
+ 
+        tabs(0);
+    </script>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Profile CSS.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='favicon.ico') }}"/>
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #555;
+        }
+        
+        .modal-title {
+            margin-top: 0;
+            color: #2980b9;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .modal-form .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .modal-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .modal-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .flash-message {
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-message flash-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+        
+        <div class="leftbox">
+            <nav>
+                <a onclick="tabs(0)" class="tab active">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a onclick="tabs(1)" class="tab">
+                    <i class="fas fa-truck"></i>
+                </a>
+                <a onclick="tabs(2)" class="tab">
+                    <i class="fas fa-calendar-alt"></i>
+                </a>
+                <a onclick="tabs(3)" class="tab">
+                    <i class="fas fa-lock"></i>
+                </a>
+                <a onclick="tabs(4)" class="tab">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </nav>
+        </div>
+        <div class="rightbox">
+            <div class="profile tabShow active">
+                <h1>Personal Information</h1>
+                <h2>Name</h2>
+                <input type="text" class="input" value="{{ user.firstname }} {{ user.lastname }}" readonly>
+                <h2>Username</h2>
+                <input type="text" class="input" value="{{ user.username }}" readonly>
+                <h2>Email</h2>
+                <input type="email" class="input" value="{{ user.email }}" readonly>
+                <h2>Password</h2>
+                <input type="password" class="input" value="********" readonly>
+                <button class="btn" id="updatePasswordBtn">Update Password</button>
+            </div>
+            <div class="Payment tabShow">
+                <h1>Shipment Information</h1>
+                <h2>Billing Address</h2>
+                <input type="text" class="input" placeholder="Your address">
+                <h2>Pincode</h2>
+                <input type="text" class="input" placeholder="Your pincode">
+                <h2>Last Order Shipped On</h2>
+                <input type="text" class="input" placeholder="No recent orders">
+                <h2>Redeem Card</h2>
+                <input type="text" class="input" placeholder="enter gift code">
+                <button class="btn">Update</button>
+            </div>
+            <div class="Subscription tabShow">
+                <h1>Subscription Information</h1>
+                <h2>Payment Date</h2>
+                <p>Not subscribed</p>
+                <h2>Date of Next Payment</h2>
+                <p>Not applicable</p>
+                <h2>Plan</h2>
+                <p>Free</p>
+                <button class="btn">Upgrade</button>
+            </div>
+            <div class="Privacy tabShow">
+                <h1>Privacy Settings</h1>
+                <h2>Manage Email Notification</h2>
+                <p><input type="checkbox" checked> Receive order notifications</p>
+                <h2>Manage Privacy Settings</h2>
+                <p><input type="checkbox" checked> Share usage data</p>
+                <h2>Terms Of Use</h2>
+                <p>By using this service, you agree to our <a href="#">Terms of Service</a></p>
+                <button class="btn">Update</button>
+            </div>
+            <div class="settings tabShow">
+                <h1>Account Settings</h1>
+                <h2>Account Status</h2>
+                <p>Active</p>
+                <h2>Member Since</h2>
+                <p>{{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'Unknown' }}</p>
+                <h2>Your Devices</h2>
+                <p>Current device</p>
+                <h2>Delete Account</h2>
+                <p><button class="btn-small btn-danger">Delete My Account</button></p>
+                <button class="btn">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Update Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 class="modal-title">Update Password</h2>
+            <form action="{{ url_for('update_password') }}" method="POST" class="modal-form">
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn" style="background: #ccc; margin-right: 10px;" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        const tabBtn = document.querySelectorAll(".tab");
+        const tabContent = document.querySelectorAll(".tabShow");
+
+        function tabs(panelIndex) {
+            tabContent.forEach(content => {
+                content.style.display = "none";
+            });
+            tabContent[panelIndex].style.display = "block";
+            
+            tabBtn.forEach(btn => {
+                btn.classList.remove("active");
+            });
+            tabBtn[panelIndex].classList.add("active");
+        }
+
+        // Initialize with first tab active
+        tabs(0);
+
+        // Modal functionality
+        const modal = document.getElementById("passwordModal");
+        const updateBtn = document.getElementById("updatePasswordBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const closeBtn = document.getElementsByClassName("close")[0];
+
+        updateBtn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        cancelBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Auto hide flash messages after 5 seconds
+        setTimeout(function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(message => {
+                message.style.display = 'none';
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

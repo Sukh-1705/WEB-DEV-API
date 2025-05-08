@@ -1,0 +1,153 @@
+{% extends "layouts/base.html" %}
+{% block title %}Profile - Foody{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Profile Information -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">My Profile</h2>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="update_profile" value="1">
+                        <div class="mb-3">
+                            <label for="id_first_name" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_last_name" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_phone" class="form-label">Phone</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.phone.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Management -->
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">My Addresses</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Add New Address Form -->
+                    <form method="POST" class="mb-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="add_address" value="1">
+                        <div class="mb-3">
+                            <label for="id_address_line1" class="form-label">Street Address</label>
+                            {{ address_form.address_line1 }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_address_line2" class="form-label">Apartment, suite, etc. (optional)</label>
+                            {{ address_form.address_line2 }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="id_city" class="form-label">City</label>
+                                {{ address_form.city }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="id_state" class="form-label">State</label>
+                                {{ address_form.state }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_zip_code" class="form-label">ZIP Code</label>
+                            {{ address_form.zip_code }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ address_form.is_default }}
+                            <label class="form-check-label" for="id_is_default">Set as default address</label>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Add Address</button>
+                        </div>
+                    </form>
+
+                    <!-- List of Addresses -->
+                    {% if addresses %}
+                        <div class="list-group">
+                            {% for address in addresses %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                {% if address.is_default %}
+                                                    <span class="badge bg-primary me-2">Default</span>
+                                                {% endif %}
+                                                {{ address.address_line1 }}
+                                            </h6>
+                                            {% if address.address_line2 %}
+                                                <p class="mb-1">{{ address.address_line2 }}</p>
+                                            {% endif %}
+                                            <p class="mb-1">{{ address.city }}, {{ address.state }} {{ address.zip_code }}</p>
+                                        </div>
+                                        <div class="btn-group">
+                                            {% if not address.is_default %}
+                                                <a href="{% url 'set_default_address' address.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-star"></i> Set Default
+                                                </a>
+                                            {% endif %}
+                                            <a href="{% url 'delete_address' address.id %}" class="btn btn-sm btn-outline-danger" 
+                                               onclick="return confirm('Are you sure you want to delete this address?')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No addresses added yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

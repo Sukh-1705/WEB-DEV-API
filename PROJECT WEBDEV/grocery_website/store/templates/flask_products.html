@@ -1,0 +1,388 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Flask API Products - Foody{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-filter {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .category-filter h4 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .category-item {
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        color: #666;
+        transition: all 0.3s;
+    }
+    .category-item:hover, .category-item.active {
+        background: #3CB815;
+        color: #fff;
+        text-decoration: none;
+    }
+    .search-box {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    .search-box input {
+        padding-right: 40px;
+    }
+    .search-box .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #3CB815;
+    }
+    .sort-box {
+        margin-bottom: 30px;
+    }
+    .product-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .product-img {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+    .product-img img {
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+    .product-action {
+        position: absolute;
+        bottom: -50px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+        background-color: rgba(255,255,255,0.9);
+        transition: all 0.3s ease;
+    }
+    .product-card:hover .product-action {
+        bottom: 0;
+    }
+    .product-card .badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #3CB815;
+        border-color: #3CB815;
+    }
+    .pagination .page-link {
+        color: #3CB815;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Flask API Products</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" href="{% url 'index' %}">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-body" href="{% url 'product' %}">Products</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Flask API Products</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Product Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-0 gx-5 align-items-end">
+            <div class="col-lg-6">
+                <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="display-5 mb-3">Flask API Products</h1>
+                    <p>Products from our Flask API integration. Showing {{ products.start_index }} – {{ products.end_index }} of {{ products.paginator.count }} results.</p>
+                </div>
+            </div>
+            <div class="col-lg-6 text-end">
+                <div class="search-box wow fadeInUp" data-wow-delay="0.1s">
+                    <form action="{% url 'flask_product_list' %}" method="GET" class="d-flex">
+                        {% if category_id %}
+                        <input type="hidden" name="category_id" value="{{ category_id }}">
+                        {% endif %}
+                        {% if sort_by %}
+                        <input type="hidden" name="sort" value="{{ sort_by }}">
+                        {% endif %}
+                        <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ search_query }}">
+                        <button type="submit" class="btn btn-primary ms-2">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <a href="{% url 'product' %}" class="btn btn-primary mt-3 wow fadeInUp" data-wow-delay="0.2s">
+                    <i class="fa fa-sync me-2"></i>View Django Products
+                </a>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <div class="category-filter wow fadeInUp" data-wow-delay="0.1s">
+                    <h4>Categories</h4>
+                    <a href="{% url 'flask_product_list' %}" class="category-item {% if not current_category %}active{% endif %}">
+                        All Products
+                    </a>
+                    {% for category in categories %}
+                    <a href="{% url 'flask_product_list' %}?category_id={{ category.id }}" 
+                       class="category-item {% if current_category == category.id|stringformat:'s' %}active{% endif %}">
+                        {{ category.name }}
+                        {% if category.source == 'flask' %}
+                        <span class="badge bg-info text-white">Flask</span>
+                        {% endif %}
+                        <span class="badge rounded-pill bg-primary float-end">{{ category.product_count }}</span>
+                    </a>
+                    {% endfor %}
+                    
+                    <h4 class="mt-4">Sort By</h4>
+                    <div class="form-group">
+                        <select class="form-select" id="sortSelect">
+                            <option value="">Default Sorting</option>
+                            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="row g-4">
+                    {% for product in products %}
+                    <div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="{{ forloop.counter0|divisibleby:3|yesno:'0.1s,0.3s,0.5s' }}">
+                        <div class="product-card">
+                            <div class="product-img">
+                                {% if product.source == 'flask' %}
+                                <span class="badge bg-info">Flask</span>
+                                {% endif %}
+                                {% if product.image_url %}
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid">
+                                {% else %}
+                                <img src="{% static 'img/placeholder.jpg' %}" alt="{{ product.name }}" class="img-fluid">
+                                {% endif %}
+                                <div class="product-action">
+                                    {% if product.source == 'flask' %}
+                                    <button class="btn btn-sm btn-primary me-2" onclick="addToCartFlask({{ product.id }}, '{{ product.name }}', {{ product.original_price|default:product.price }}, '{{ product.image_url }}')">
+                                        <i class="fa fa-shopping-cart me-1"></i>Add to Cart
+                                    </button>
+                                    <a href="{% url 'flask_product_detail' product.id %}" class="btn btn-sm btn-outline-dark">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {% else %}
+                                    <button class="btn btn-sm btn-primary me-2 add-to-cart" data-product-id="{{ product.id }}" data-product-name="{{ product.name }}">
+                                        <i class="fa fa-shopping-cart me-1"></i>Add to Cart
+                                    </button>
+                                    <a href="{% url 'product_detail' 'product-slug' %}" class="btn btn-sm btn-outline-dark">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="p-4 text-center">
+                                <h5 class="mb-2">
+                                    {% if product.source == 'flask' %}
+                                    <a href="{% url 'flask_product_detail' product.id %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                                    {% else %}
+                                    <a href="{% url 'product_detail' 'product-slug' %}" class="text-decoration-none text-dark">{{ product.name }}</a>
+                                    {% endif %}
+                                </h5>
+                                <div class="d-flex justify-content-center">
+                                    <h6 class="text-primary mb-0">₹{{ product.price }}</h6>
+                                    {% if product.source == 'flask' and product.original_price %}
+                                    <small class="text-muted ms-2">($ {{ product.original_price }})</small>
+                                    {% endif %}
+                                </div>
+                                <div class="small text-muted mt-2">{{ product.category_name }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No products found. {% if search_query %}Try a different search term.{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                
+                    <!-- Pagination Start -->
+                    {% if products.paginator.num_pages > 1 %}
+                    <div class="col-12 mt-5">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                {% if products.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if category_id %}category_id={{ category_id }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ products.previous_page_number }}">
+                                        <i class="fa fa-angle-left"></i> Previous
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#"><i class="fa fa-angle-left"></i> Previous</a>
+                                </li>
+                                {% endif %}
+
+                                {% for i in products.paginator.page_range %}
+                                    {% if products.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">{{ i }}</a>
+                                    </li>
+                                    {% elif i > products.number|add:'-3' and i < products.number|add:'3' %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?{% if category_id %}category_id={{ category_id }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ i }}">{{ i }}</a>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if products.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?{% if category_id %}category_id={{ category_id }}&{% endif %}{% if search_query %}q={{ search_query }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ products.next_page_number }}">
+                                        Next <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#">Next <i class="fa fa-angle-right"></i></a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                    <!-- Pagination End -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product End -->
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+// Function to add a Flask product to cart
+function addToCartFlask(productId, productName, price, imageUrl) {
+    // Get CSRF token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Make AJAX request to add to cart
+    fetch('/flask-api/add-to-cart/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            product_name: productName,
+            price: price,
+            image_url: imageUrl,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showToast(`${productName} added to cart!`, 'success');
+            
+            // Update cart count if available
+            if (data.cart_count !== undefined) {
+                document.getElementById('cart-count').textContent = data.cart_count;
+            }
+        } else {
+            showToast(data.error || 'Failed to add to cart', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred while adding to cart', 'danger');
+    });
+}
+
+// Function to show toast notification
+function showToast(message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast show bg-${type} text-white`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Create toast container if it doesn't exist
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+    container.style.zIndex = '5';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Handle sort change
+document.addEventListener('DOMContentLoaded', function() {
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const sortValue = this.value;
+            let url = new URL(window.location.href);
+            
+            if (sortValue) {
+                url.searchParams.set('sort', sortValue);
+            } else {
+                url.searchParams.delete('sort');
+            }
+            
+            window.location.href = url.toString();
+        });
+    }
+});
+</script>
+{% endblock %} 

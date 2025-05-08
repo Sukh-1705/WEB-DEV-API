@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Details{% endblock %}
+
+{% block content %}
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-5 mb-30">
+            <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner bg-light">
+                    <div class="carousel-item active">
+                        {% if product.image_url %}
+                        <img class="w-100 h-100" src="{{ product.image_url }}" alt="{{ product.name }}">
+                        {% else %}
+                        <img class="w-100 h-100" src="{% static 'img/placeholder.jpg' %}" alt="{{ product.name }}">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7 h-auto mb-30">
+            <div class="h-100 bg-light p-30">
+                <h3>{{ product.name }}</h3>
+                <p class="mb-1">Category: {{ product.category_name }}</p>
+                <div class="d-flex mb-3">
+                    <div class="text-primary mr-2">
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star"></small>
+                        <small class="fas fa-star-half-alt"></small>
+                        <small class="far fa-star"></small>
+                    </div>
+                    <small class="pt-1">(Flask API Product)</small>
+                </div>
+                <h3 class="font-weight-semi-bold mb-4">₹{{ product.price }}
+                {% if product.original_price %}
+                <small class="text-muted ms-2">($ {{ product.original_price }})</small>
+                {% endif %}
+                </h3>
+                <p class="mb-4">{{ product.description }}</p>
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-minus">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control bg-secondary border-0 text-center" value="1" id="quantity">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary px-3" onclick="addToCartFlask({{ product.id }}, '{{ product.name }}', {{ product.original_price|default:product.price }}, '{{ product.image_url }}')">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
+                    </button>
+                </div>
+                <div class="d-flex pt-2">
+                    <strong class="text-dark mr-2">Share on:</strong>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="bg-light p-30">
+                <div class="nav nav-tabs mb-4">
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="tab-pane-1">
+                        <h4 class="mb-3">Product Description</h4>
+                        <p>{{ product.description|default:"No description available." }}</p>
+                    </div>
+                    <div class="tab-pane fade" id="tab-pane-2">
+                        <h4 class="mb-3">Additional Information</h4>
+                        <p>Product ID: {{ product.id }}</p>
+                        <p>Category: {{ product.category_name }}</p>
+                        <p>Stock: {{ product.stock|default:"Unknown" }}</p>
+                        <p>Created: {{ product.created_at|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Shop Detail End -->
+
+<!-- Products Start -->
+<div class="container-fluid py-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">You May Also Like</span></h2>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="owl-carousel related-carousel">
+                {% for related in related_products %}
+                <div class="product-item bg-light">
+                    <div class="product-img position-relative overflow-hidden">
+                        {% if related.image_url %}
+                        <img class="img-fluid w-100" src="{{ related.image_url }}" alt="{{ related.name }}">
+                        {% else %}
+                        <img class="img-fluid w-100" src="{% static 'img/placeholder.jpg' %}" alt="{{ related.name }}">
+                        {% endif %}
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href="#" onclick="addToCartFlask({{ related.id }}, '{{ related.name }}', {{ related.original_price|default:related.price }}, '{{ related.image_url }}'); return false;"><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href="{% url 'flask_product_detail' related.id %}"><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="{% url 'flask_product_detail' related.id %}">{{ related.name }}</a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>₹{{ related.price }}</h5>
+                            {% if related.original_price %}
+                            <small class="text-muted ms-2">($ {{ related.original_price }})</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center w-100">
+                    <p>No related products found.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Products End -->
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Function to add a Flask product to cart with quantity
+    function addToCartFlask(productId, productName, price, imageUrl) {
+        // Get quantity from input
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        
+        // Get CSRF token
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Make AJAX request to add to cart
+        fetch('/flask-api/add-to-cart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                product_name: productName,
+                price: price,
+                image_url: imageUrl,
+                quantity: quantity
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showAlert('Success', `${productName} added to cart!`, 'success');
+                
+                // Update cart count if available
+                if (data.cart_count !== undefined) {
+                    document.getElementById('cartCount').textContent = data.cart_count;
+                }
+            } else {
+                showAlert('Error', data.error || 'Failed to add to cart', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error', 'An error occurred while adding to cart', 'danger');
+        });
+    }
+    
+    function showAlert(title, message, type) {
+        // Create alert element
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            <strong>${title}:</strong> ${message}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        `;
+        
+        // Add to page
+        document.querySelector('.container-fluid').prepend(alertDiv);
+        
+        // Auto dismiss after 3 seconds
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 300);
+        }, 3000);
+    }
+    
+    // Quantity buttons
+    $(document).ready(function() {
+        $('.btn-plus').on('click', function() {
+            let quantity = parseInt($('#quantity').val());
+            $('#quantity').val(quantity + 1);
+        });
+        
+        $('.btn-minus').on('click', function() {
+            let quantity = parseInt($('#quantity').val());
+            if (quantity > 1) {
+                $('#quantity').val(quantity - 1);
+            }
+        });
+    });
+</script>
+{% endblock %} 

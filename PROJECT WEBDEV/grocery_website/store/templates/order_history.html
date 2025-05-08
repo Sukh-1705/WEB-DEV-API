@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+{% block title %}Order History - Foody{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">Order History</h2>
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>₹{{ order.total_amount }}</td>
+                        <td>{{ order.get_payment_status_display }}</td>
+                        <td>
+                            <a href="{% url 'order_success' order.id %}" class="btn btn-sm btn-primary">View</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+</div>
+{% endblock %} 

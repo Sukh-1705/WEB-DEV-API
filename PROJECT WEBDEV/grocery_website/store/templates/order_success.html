@@ -1,0 +1,73 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Order Success - Foody{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Order Success</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Order Success</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center p-5">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                    <h2 class="mt-4 mb-3">Thank You for Your Order!</h2>
+                    <p class="text-muted mb-4">Your order has been placed successfully. We'll process it right away.</p>
+                    
+                    <div class="order-details text-start mb-4">
+                        <h4 class="mb-3">Order Details</h4>
+                        <p><strong>Order ID:</strong> #{{ order.id }}</p>
+                        <p><strong>Order Date:</strong> {{ order.created_at|date:"F j, Y" }}</p>
+                        <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+                        <p><strong>Payment Method:</strong> {{ order.get_payment_method_display }}</p>
+                    </div>
+                    
+                    <div class="shipping-details text-start mb-4">
+                        <h4 class="mb-3">Shipping Details</h4>
+                        <p><strong>Name:</strong> {{ order.full_name }}</p>
+                        <p><strong>Address:</strong> {{ order.address_line1 }}</p>
+                        {% if order.address_line2 %}
+                        <p>{{ order.address_line2 }}</p>
+                        {% endif %}
+                        <p>{{ order.city }}, {{ order.state }} - {{ order.postal_code }}</p>
+                        <p><strong>Phone:</strong> {{ order.phone }}</p>
+                    </div>
+                    
+                    <div class="order-items text-start mb-4">
+                        <h4 class="mb-3">Order Items</h4>
+                        {% for item in order.items.all %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                            <span>₹{{ item.price }}</span>
+                        </div>
+                        {% endfor %}
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Total:</strong>
+                            <strong>₹{{ order.total_amount }}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'product' %}" class="btn btn-primary me-2">Continue Shopping</a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-primary">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

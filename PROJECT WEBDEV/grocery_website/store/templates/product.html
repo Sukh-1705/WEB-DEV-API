@@ -1,0 +1,295 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Products - Foody{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-filter {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .category-filter h4 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .category-item {
+        display: block;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        color: #666;
+        transition: all 0.3s;
+    }
+    .category-item:hover, .category-item.active {
+        background: #3CB815;
+        color: #fff;
+        text-decoration: none;
+    }
+    .search-box {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    .search-box input {
+        padding-right: 40px;
+    }
+    .search-box .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #3CB815;
+    }
+    .sort-box {
+        margin-bottom: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Products</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" href="{% url 'index' %}">Home</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Products</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Product Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-0 gx-5 align-items-end">
+            <div class="col-lg-6">
+                <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s">
+                    <h1 class="display-5 mb-3">Our Products</h1>
+                    <p>Fresh and organic products for your daily needs.</p>
+                </div>
+            </div>
+            <div class="col-lg-6 text-end">
+                <div class="search-box wow fadeInUp" data-wow-delay="0.1s">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search products..." value="{{ search_query }}">
+                    <i class="fa fa-search search-icon"></i>
+                </div>
+                <a href="{% url 'flask_product_list' %}" class="btn btn-primary mt-3 wow fadeInUp" data-wow-delay="0.2s">
+                    <i class="fa fa-sync me-2"></i>View Flask API Products
+                </a>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <div class="category-filter wow fadeInUp" data-wow-delay="0.1s">
+                    <h4>Categories</h4>
+                    <a href="{% url 'product' %}" class="category-item {% if not current_category %}active{% endif %}">
+                        All Products
+                    </a>
+                    {% for category in categories %}
+                    <a href="?category={{ category.type }}" 
+                       class="category-item {% if current_category == category.type %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                    
+                    <h4 class="mt-4">Sort By</h4>
+                    <select class="form-select" id="sortSelect">
+                        <option value="">Default Sorting</option>
+                        <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="row g-4" id="productList">
+                    {% include 'partials/product_list.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product End -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    let currentSearchTerm = '';
+    let currentSort = '';
+    let debounceTimer;
+
+    // Debounced search function
+    function debounce(func, wait) {
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(debounceTimer);
+                func(...args);
+            };
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(later, wait);
+        };
+    }
+
+    // Function to update URL parameters
+    function updateURLParameters(search, sort, category) {
+        const url = new URL(window.location.href);
+        if (search) url.searchParams.set('search', search);
+        else url.searchParams.delete('search');
+        if (sort) url.searchParams.set('sort', sort);
+        else url.searchParams.delete('sort');
+        if (category) url.searchParams.set('category', category);
+        window.history.pushState({}, '', url);
+    }
+
+    // Function to fetch and update products
+    async function updateProducts(search, sort) {
+        try {
+            const url = new URL(`${window.location.origin}/product/`);
+            if (search) url.searchParams.set('q', search);
+            if (sort) url.searchParams.set('sort', sort);
+            
+            // Preserve category if it exists
+            const currentCategory = new URLSearchParams(window.location.search).get('category');
+            if (currentCategory) url.searchParams.set('category', currentCategory);
+            
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+            const productsContainer = document.getElementById('productList');
+            if (productsContainer) {
+                productsContainer.innerHTML = data.html;
+                // Update URL parameters
+                updateURLParameters(search, sort, currentCategory);
+                // Reinitialize event listeners
+                initializeProductEventListeners();
+            } else {
+                throw new Error('Product container not found');
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            showToast('Error loading products. Please try again.', 'error');
+        }
+    }
+
+    // Debounced search handler
+    const debouncedSearch = debounce((searchTerm) => {
+        currentSearchTerm = searchTerm;
+        updateProducts(searchTerm, currentSort);
+    }, 300);
+
+    // Search input event listener
+    searchInput.addEventListener('input', (e) => {
+        debouncedSearch(e.target.value.trim());
+    });
+
+    // Sort select event listener
+    sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        updateProducts(currentSearchTerm, currentSort);
+    });
+
+    // Initialize product event listeners
+    function initializeProductEventListeners() {
+        document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productId = this.dataset.productId;
+                addToCart(productId);
+            });
+        });
+    }
+
+    // Add to cart function
+    async function addToCart(productId) {
+        const csrftoken = getCookie('csrftoken');
+        try {
+            const response = await fetch('/add-to-cart/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({ product_id: productId }),
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+            updateCartCount(data.cart_count);
+            showToast('Product added to cart successfully!', 'success');
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            showToast('Error adding product to cart. Please try again.', 'error');
+        }
+    }
+
+    // Show toast message function
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type} position-fixed top-0 end-0 m-3`;
+        toast.style.zIndex = '1050';
+        toast.innerHTML = `
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+        bsToast.show();
+        
+        toast.addEventListener('hidden.bs.toast', () => {
+            toast.remove();
+        });
+    }
+
+    // Get cookie function
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updateCartCount(count) {
+        const cartBadge = document.querySelector('.fa-shopping-bag').closest('a').querySelector('.badge');
+        if (cartBadge) {
+            cartBadge.textContent = count;
+        } else {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-primary rounded-pill position-absolute';
+            badge.style = 'top: -5px; right: -5px;';
+            badge.textContent = count;
+            document.querySelector('.fa-shopping-bag').closest('a').appendChild(badge);
+        }
+    }
+
+    // Initialize event listeners on page load
+    initializeProductEventListeners();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Shopping Cart CSS.css') }}">
+    <script src="https://kit.fontawesome.com/9088cc6401.js" crossorigin="anonymous"></script>
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='images/favicon.ico') }}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        <div class="cart">
+            <div class="products">
+                {% for item in cart_items %}
+                <div class="product" data-item-id="{{ item.id }}">
+                    <img src="{{ item.image_url }}" alt="{{ item.product_name }}">
+                    <div class="product-info">
+                        <h3 class="product-name">{{ item.product_name }}</h3>
+                        <h4 class="product-price">Rs. {{ "%.2f"|format(item.price) }}</h4>
+                        <p class="product-quantity">
+                            Qnt: 
+                            <button class="quantity-btn minus">-</button>
+                            <input value="{{ item.quantity }}" name="quantity" readonly>
+                            <button class="quantity-btn plus">+</button>
+                        </p>
+                        <p class="product-remove">
+                            <i class="fas fa-trash-alt"></i>
+                            <span class="remove">Remove</span>
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-total">
+                <p>
+                    <span>Total Price</span>
+                    <span class="total-amount">Rs. {{ "%.2f"|format(total_price) }}</span>
+                </p>
+                {% if cart_items %}
+                <a href="{{ url_for('checkout_page') }}">Proceed to Checkout</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Update quantity
+            $('.quantity-btn').click(function() {
+                const product = $(this).closest('.product');
+                const itemId = product.data('item-id');
+                const quantityInput = product.find('input[name="quantity"]');
+                let quantity = parseInt(quantityInput.val());
+                
+                if ($(this).hasClass('plus')) {
+                    quantity++;
+                } else if ($(this).hasClass('minus')) {
+                    quantity = Math.max(0, quantity - 1);
+                }
+                
+                $.ajax({
+                    url: '/update_cart_quantity',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        item_id: itemId,
+                        quantity: quantity
+                    }),
+                    success: function(response) {
+                        quantityInput.val(quantity);
+                        $('.total-amount').text('Rs. ' + response.total_price.toFixed(2));
+                        
+                        if (quantity === 0) {
+                            product.remove();
+                        }
+                        
+                        // If no items left, reload page to update checkout button
+                        if ($('.product').length === 0) {
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error updating cart: ' + error);
+                    }
+                });
+            });
+            
+            // Remove item
+            $('.product-remove').click(function() {
+                const product = $(this).closest('.product');
+                const itemId = product.data('item-id');
+                
+                $.ajax({
+                    url: '/remove_from_cart',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        item_id: itemId
+                    }),
+                    success: function(response) {
+                        product.remove();
+                        $('.total-amount').text('Rs. ' + response.total_price.toFixed(2));
+                        
+                        // If no items left, reload page to update checkout button
+                        if ($('.product').length === 0) {
+                            location.reload();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error removing item: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/custom_admin.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <i class="fas fa-store-alt"></i>
+    <a href="{% url 'admin:index' %}">Foody Administration</a>
+</h1>
+{% endblock %}
+
+{% block nav-global %}
+<div style="margin-top: 20px; margin-bottom: 10px;">
+    <a href="{% url 'admin:sales_dashboard' %}" class="dashboard-link">
+        <i class="fas fa-chart-line"></i> Sales Dashboard
+    </a>
+    <a href="{% url 'admin:store_order_changelist' %}" class="dashboard-link">
+        <i class="fas fa-shopping-bag"></i> Manage Orders
+    </a>
+    <a href="{% url 'admin:store_product_changelist' %}" class="dashboard-link">
+        <i class="fas fa-box"></i> Manage Products
+    </a>
+    <a href="{% url 'admin:store_registeruser_changelist' %}" class="dashboard-link">
+        <i class="fas fa-users"></i> Manage Users
+    </a>
+</div>
+{% endblock %} 

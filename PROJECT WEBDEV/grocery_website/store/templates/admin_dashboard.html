@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="bg-light p-30">
+                <h2 class="mb-4">Admin Dashboard</h2>
+                
+                <!-- Data Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                Django Statistics
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ django_stats.total_users }}</h1>
+                                            <p>Users</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ django_stats.total_products }}</h1>
+                                            <p>Products</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ django_stats.total_categories }}</h1>
+                                            <p>Categories</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                Flask API Statistics
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ flask_data.total_users }}</h1>
+                                            <p>Users</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ flask_data.total_products }}</h1>
+                                            <p>Products</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="text-center">
+                                            <h1>{{ flask_data.total_categories }}</h1>
+                                            <p>Categories</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Categories -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Top Categories (Flask API)
+                            </div>
+                            <div class="card-body">
+                                {% if flask_data.top_categories %}
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Product Count</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for category in flask_data.top_categories %}
+                                        <tr>
+                                            <td>{{ category.name }}</td>
+                                            <td>{{ category.product_count }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                <p class="text-center">No category data available</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Actions
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="{% url 'sync_with_flask' %}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">Sync with Flask API</h5>
+                                        </div>
+                                        <p class="mb-1">Sync Django products and categories with Flask API</p>
+                                    </a>
+                                    <a href="{% url 'flask_product_list' %}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">View Flask Products</h5>
+                                        </div>
+                                        <p class="mb-1">View products from Flask API</p>
+                                    </a>
+                                    <a href="{% url 'flask_category_list' %}" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">View Flask Categories</h5>
+                                        </div>
+                                        <p class="mb-1">View categories from Flask API</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

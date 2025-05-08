@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Categories from API{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="bg-light p-30">
+                <h2 class="mb-4">Flask API Categories</h2>
+                
+                <div class="row">
+                    {% for category in categories %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ category.name }}</h5>
+                                <p class="card-text">{{ category.description|default:"No description available." }}</p>
+                                <p class="card-text"><small class="text-muted">Contains {{ category.product_count }} products</small></p>
+                                <a href="{% url 'flask_product_list' %}?category_id={{ category.id }}" class="btn btn-primary">View Products</a>
+                                <a href="{% url 'flask_category_detail' category.id %}" class="btn btn-outline-secondary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            No categories found in Flask API.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

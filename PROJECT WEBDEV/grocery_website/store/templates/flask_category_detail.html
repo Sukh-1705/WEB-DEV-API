@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} - Category Details{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="bg-light p-30 mb-4">
+                <h2 class="mb-3">{{ category.name }}</h2>
+                <p class="lead">{{ category.description|default:"No description available." }}</p>
+                <div class="d-flex">
+                    <a href="{% url 'flask_category_list' %}" class="btn btn-secondary mr-2">Back to Categories</a>
+                    <a href="{% url 'flask_product_list' %}?category_id={{ category.id }}" class="btn btn-primary">View All Products</a>
+                </div>
+            </div>
+            
+            <h3 class="mb-4">Products in this Category</h3>
+            
+            <div class="row">
+                {% for product in category.products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            {% if product.image_url %}
+                            <img class="img-fluid w-100" src="{{ product.image_url }}" alt="{{ product.name }}">
+                            {% else %}
+                            <img class="img-fluid w-100" src="{% static 'img/placeholder.jpg' %}" alt="{{ product.name }}">
+                            {% endif %}
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square" href="#" onclick="addToCartFlask({{ product.id }}, '{{ product.name }}', {{ product.price }}, '{{ product.image_url }}'); return false;"><i class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href="{% url 'flask_product_detail' product.id %}"><i class="fa fa-search"></i></a>
+                            </div>
+                        </div>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="{% url 'flask_product_detail' product.id %}">{{ product.name }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>${{ product.price }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No products found in this category.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Function to add a Flask product to cart
+    function addToCartFlask(productId, productName, price, imageUrl) {
+        // Get CSRF token
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Make AJAX request to add to cart
+        fetch('/flask-api/add-to-cart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                product_name: productName,
+                price: price,
+                image_url: imageUrl,
+                quantity: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showAlert('Success', `${productName} added to cart!`, 'success');
+                
+                // Update cart count if available
+                if (data.cart_count !== undefined) {
+                    document.getElementById('cartCount').textContent = data.cart_count;
+                }
+            } else {
+                showAlert('Error', data.error || 'Failed to add to cart', 'danger');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('Error', 'An error occurred while adding to cart', 'danger');
+        });
+    }
+    
+    function showAlert(title, message, type) {
+        // Create alert element
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            <strong>${title}:</strong> ${message}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        `;
+        
+        // Add to page
+        document.querySelector('.container-fluid').prepend(alertDiv);
+        
+        // Auto dismiss after 3 seconds
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 300);
+        }, 3000);
+    }
+</script>
+{% endblock %} 

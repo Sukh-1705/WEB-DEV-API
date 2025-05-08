@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!--==Title==================================-->
+        <title>Chitkara Grocery Store</title>
+
+        <!--==Stylesheet=============================-->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Home Page CSS.css') }}">
+
+        <!--==Fav-icon===============================-->
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/fav-icon.png') }}"/>
+
+        <!--==Using-Font-Awesome=====================-->
+        <script src="https://kit.fontawesome.com/5471644867.js" crossorigin="anonymous"></script>
+
+        <!--==JavaScript=============================-->
+        <script src="{{ url_for('static', filename='js/Home Page JS.js') }}" defer></script>
+
+        <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='images/fav-icon.png') }}"/>
+        <style>.notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #40aa54;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            z-index: 1000;
+            animation: slideIn 0.5s, fadeOut 0.5s 2.5s;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }</style>
+    </head>
+
+    <body>
+        <!--==Navigation================================-->
+        <nav class="navigation">
+            <!--logo-------->
+            <a href="#" class="logo">
+                <span>C</span>GS
+            </a>
+
+            <!--menu-btn---->
+            <input type="checkbox" class="menu-btn" id="menu-btn">
+            <label for="menu-btn" class="menu-icon">
+                <span class="nav-icon"></span>
+            </label>
+
+            <!--menu-------->
+            <ul class="menu">
+                <li><a href="{{ url_for('home') }}" class="active">Home</a></li>
+                <li><a href="#category">Categories</a></li>
+                <li><a href="#popular-bundle-pack">Packages</a></li>
+                <li><a href="{{ url_for('contact') }}">ContactUs</a></li>
+                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                <li><a href="{{ url_for('about') }}">AboutUs</a></li>
+                <li><a href="#download-app">App</a></li>
+                <li><a href="{{ url_for('signup') }}">SignUp</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+            </ul>
+
+            <!--right-nav-(cart-like)-->
+            <div class="right-nav">
+                <!--like----->
+                <a href="{{ url_for('wishlist') }}" class="like">
+                    <i class="fas fa-heart"></i>
+                    <span>2</span>
+                </a>
+
+                <!--cart----->
+                <a href="{{ url_for('shopping_cart') }}" class="cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>2</span>
+                </a>
+
+                <!--user-profile----->
+                <a href="{{ url_for('profile') }}" class="user-profile">
+                    <i class="fas fa-user"></i>
+                    <span>1</span>
+                </a>
+            </div>
+        </nav>
+
+        <!--==Search-banner=======================================-->
+        <section id="search-banner">
+            <!--bg--------->
+            <img alt="bg" class="bg-1" src="{{ url_for('static', filename='images/tamato.png') }}">
+            <img alt="bg" class="bg-1_rev" src="{{ url_for('static', filename='images/tamato.png') }}">
+            <img alt="bg-2" class="bg-2" src="{{ url_for('static', filename='images/bg-2.png') }}">
+
+            <!--text------->
+            <div class="search-banner-text">
+                <h1>Order Your daily Groceries</h1>
+                <strong>#Free Delivery</strong>
+
+                <!--search-box------>
+                <form action="" class="search-box">
+                    <!--icon------>
+                    <i class="fas fa-search"></i>
+                    <!--input----->
+                    <input type="text" class="search-input" placeholder="Search" name="search" size="80px" required>
+                    <!--btn------->
+                    <input type="submit" class="search-btn" value="Search">
+                </form>
+
+                <br>
+                <h3>
+                    <a href="{{ url_for('best_deals') }}" style="color: #40aa54">
+                        Click here to learn about today's best deals
+                    </a>
+                </h3>
+            </div>
+        </section>
+
+        <!--==Category=========================================-->
+        <section id="category">
+            <!--heading---------------->
+            <div class="category-heading">
+                <h2>Category</h2>
+                <span>All</span>
+            </div>
+
+            <!--box-container---------->
+            <div class="category-container">
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('fruits_category') }}">
+                    <img alt="Fruits and Vegetables" src="{{ url_for('static', filename='images/Vegetables.png') }}">
+                    <span>Fruits & <br> Vegetables</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('medicine_category') }}">
+                    <img alt="Medicines" src="{{ url_for('static', filename='images/medicine.png') }}">
+                    <span>Medicine</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('baby_care_category') }}">
+                    <img alt="Baby Care Products" src="{{ url_for('static', filename='images/baby.png') }}">
+                    <span>Baby Care</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('office_category') }}">
+                    <img alt="Fish" src="{{ url_for('static', filename='images/fish.png') }}">
+                    <span>Stationary</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('beauty_category') }}">
+                    <img alt="Beauty Products" src="{{ url_for('static', filename='images/beauty.png') }}">
+                    <span>Beauty</span>
+                </a>
+                <!--box---------------->
+                <a class="category-box" href="{{ url_for('gardening_category') }}">
+                    <img alt="Gardening Products" src="{{ url_for('static', filename='images/Gardening.png') }}">
+                    <span>Gardening</span>
+                </a>
+            </div>
+        </section>
+
+        <!--==Products====================================-->
+        <section id="popular-product">
+            <!--heading----------->
+            <div class="product-heading">
+                <h3>Popular Product</h3>
+                <span>All</span>
+            </div>
+
+            <!--box-container------>
+            <!-- Popular Products Section -->
+<div class="product-container">
+    <!-- Apple Box -->
+    <div class="product-box">
+        <img alt="apple" src="{{ url_for('static', filename='images/apple.png') }}">
+        <strong>Apple</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 100</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Apple', 'Rs. 100', '{{ url_for('static', filename='images/apple.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Chili Box -->
+    <div class="product-box">
+        <img alt="chili" src="{{ url_for('static', filename='images/chili.png') }}">
+        <strong>Chili</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 80</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Chili', 'Rs. 80', '{{ url_for('static', filename='images/chili.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Onion Box -->
+    <div class="product-box">
+        <img alt="onion" src="{{ url_for('static', filename='images/onion.png') }}">
+        <strong>Onion</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 50</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Onion', 'Rs. 50', '{{ url_for('static', filename='images/onion.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Potato Box -->
+    <div class="product-box">
+        <img alt="potato" src="{{ url_for('static', filename='images/patato.png') }}">
+        <strong>Potato</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 60</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Potato', 'Rs. 60', '{{ url_for('static', filename='images/patato.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Garlic Box -->
+    <div class="product-box">
+        <img alt="garlic" src="{{ url_for('static', filename='images/garlic.png') }}">
+        <strong>Garlic</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 50</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Garlic', 'Rs. 50', '{{ url_for('static', filename='images/garlic.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Tomato Box -->
+    <div class="product-box">
+        <img alt="tomato" src="{{ url_for('static', filename='images/tamato.png') }}">
+        <strong>Tomato</strong>
+        <span class="quantity">1 KG</span>
+        <span class="price">Rs. 80</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Tomato', 'Rs. 80', '{{ url_for('static', filename='images/tamato.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Popular Bundle Pack Section -->
+<div class="product-container">
+    <!-- Big Pack Box -->
+    <div class="product-box">
+        <img alt="pack" src="{{ url_for('static', filename='images/pack2.jpg') }}">
+        <strong>Big Pack</strong>
+        <span class="quantity">Lemon, Tomato, Potato,+4</span>
+        <span class="price">Rs. 500</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Big Pack', 'Rs. 500', '{{ url_for('static', filename='images/pack2.jpg') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Large Pack Box -->
+    <div class="product-box">
+        <img alt="pack" src="{{ url_for('static', filename='images/pack1.png') }}">
+        <strong>Large Pack</strong>
+        <span class="quantity">Lemon, Tomato, Potato,+2</span>
+        <span class="price">Rs. 800</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Large Pack', 'Rs. 800', '{{ url_for('static', filename='images/pack1.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- Small Pack Box -->
+    <div class="product-box">
+        <img alt="pack" src="{{ url_for('static', filename='images/pack3.png') }}">
+        <strong>Small Pack</strong>
+        <span class="quantity">Lemon, Tomato, Potato</span>
+        <span class="price">Rs. 300</span>
+        <a href="#" class="cart-btn" onclick="addToCart('Small Pack', 'Rs. 300', '{{ url_for('static', filename='images/pack3.png') }}')">
+            <i class="fas fa-shopping-bag"></i> Add to Cart
+        </a>
+        <a class="like-btn">
+            <i class="far fa-heart"></i>
+        </a>
+    </div>
+</div>
+        </section>
+
+        <!--==Popular-bundle-pack===================================-->
+        <section id="popular-bundle-pack">
+            <!--heading-------------->
+            <div class="product-heading">
+                <h3>Popular Bundle Pack</h3>
+            </div>
+
+            <!--box-container------>
+            <div class="product-container">
+                <!--box---------->
+                <div class="product-box">
+                    <img alt="pack" src="{{ url_for('static', filename='images/pack2.jpg') }}">
+                    <strong>Big Pack</strong>
+                    <span class="quantity">Lemon, Tomato, Potato,+4</span>
+                    <span class="price">Rs. 500</span>
+                    <!--cart-btn------->
+                    <!-- <a href="{{ url_for('shopping_cart') }}" class="cart-btn">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </a> -->
+                    <!-- <a href="#" class="cart-btn" onclick="addToCart('${product.name}', '${product.price}', '${product.image}')"> -->
+                        <a href="#" class="cart-btn" onclick="addToCart('Apple', 'Rs. 100', '{{ url_for('static', filename='images/apple.png') }}')">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </a>
+                    <!--like-btn------->
+                    <a class="like-btn">
+                        <i class="far fa-heart"></i>
+                    </a>
+                </div>
+                <!--box---------->
+                <div class="product-box">
+                    <img alt="apple" src="{{ url_for('static', filename='images/pack1.png') }}">
+                    <strong>Large Pack</strong>
+                    <span class="quantity">Lemon, Tomato, Potato,+2</span>
+                    <span class="price">Rs. 800</span>
+                    <!--cart-btn------->
+                    <!-- <a href="{{ url_for('shopping_cart') }}" class="cart-btn">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </a> -->
+                    <!-- <a href="#" class="cart-btn" onclick="addToCart('${product.name}', '${product.price}', '${product.image}')"> -->
+                        <a href="#" class="cart-btn" onclick="addToCart('Apple', 'Rs. 100', '{{ url_for('static', filename='images/apple.png') }}')">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </a>
+                    <!--like-btn------->
+                    <a class="like-btn">
+                        <i class="far fa-heart"></i>
+                    </a>
+                </div>
+                <!--box---------->
+                <div class="product-box">
+                    <img alt="apple" src="{{ url_for('static', filename='images/pack3.png') }}">
+                    <strong>Small Pack</strong>
+                    <span class="quantity">Lemon, Tomato, Potato</span>
+                    <span class="price">Rs. 300</span>
+                    <!--cart-btn------->
+                    <a href="{{ url_for('shopping_cart') }}" class="cart-btn">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </a>
+                    <!--like-btn------->
+                    <a class="like-btn">
+                        <i class="far fa-heart"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!--==Clients===============================================-->
+        <section id="clients">
+            <!--heading---------------->
+            <div class="client-heading">
+                <h3>What Our Clients Say</h3>
+            </div>
+
+            <!--box-container---------->
+            <div class="client-box-container">
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="{{ url_for('static', filename='images/client-1.jpg') }}">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>James Mcavoy</strong>
+                            <span>CEO</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>Chitkara Grocery Store is the best. CGS never fails to disappoint me. Grocery shopping has become so easy with Chitkara Grocery Store.</p>
+                </div>
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="{{ url_for('static', filename='images/client-2.jpg') }}">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>Sameer Sharma</strong>
+                            <span>Software Developer</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>Chitkara Grocery Store is just amazing. I can buy all my groceries from a single place. The groceries are available at very affordable prices. And, the groceries are delivered at the time slot you choose and prefer.</p>
+                </div>
+                <!--box------------->
+                <div class="client-box">
+                    <!--==profile===-->
+                    <div class="client-profile">
+                        <!--img--->
+                        <img alt="client" src="{{ url_for('static', filename='images/client-3.jpg') }}">
+                        <!--text-->
+                        <div class="profile-text">
+                            <strong>Ava Alex</strong>
+                            <span>Marketer</span>
+                        </div>
+                    </div>
+                    <!--==Rating======-->
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <!--==comments===-->
+                    <p>At Chitkara Grocery Store, you can get fresh fruits and vegetables. And it is not only about fruits or vegetables, you can buy all kinds of stuff here.</p>
+                </div>
+            </div>
+        </section>
+
+        <!--==Partnre-logo================================-->
+        <section id="partner">
+            <!--heading------------>
+            <div class="partner-heading">
+                <h3>Our Trusted Partner</h3>
+            </div>
+
+            <!--logo-container----->
+            <div class="logo-container">
+                <img alt="logo" src="{{ url_for('static', filename='images/logo-1.png') }}">
+                <img alt="logo" src="{{ url_for('static', filename='images/logo-2.png') }}">
+                <img alt="logo" src="{{ url_for('static', filename='images/logo-3.png') }}">
+                <img alt="logo" src="{{ url_for('static', filename='images/logo-4.png') }}">
+            </div>
+        </section>
+
+        <!--==download-app====================================-->
+        <section id="download-app">
+            <!--img----------------------->
+            <div class="app-img">
+                <img alt="app" src="{{ url_for('static', filename='images/mobile-app.png') }}">
+            </div>
+
+            <!--text---------------------->
+            <div class="download-app-text">
+                <strong>Download App</strong>
+                <p>Grocery shopping made easier. Now, you don't need to open the website for placing orders. Download the <b>Chitkara Grocery Store</b> app from Play Store and App Store to start shopping easily and faster. <br> HAPPY SHOPPING!</p>
+                <!--btns------->
+                <div class="download-btns">
+                    <a href="https://www.apple.com/in/app-store/"><img alt="" src="{{ url_for('static', filename='images/appstore-btn.png') }}"></a>
+                    <a href="https://play.google.com/store"><img alt="" src="{{ url_for('static', filename='images/googleplay-btn.png') }}"></a>
+                </div>
+            </div>
+        </section>
+        <!--download-app-section-end------------------------->
+        <!--==Footer=============================================-->
+        <footer>
+            <div class="footer-container">
+                <!--logo-container------>
+                <div class="footer-logo">
+                    <a href="images/Logo.png"><span>C</span>GS</a>
+                    <!--social----->
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/?lang=en-in"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <!--links------------------------->
+            <div class="footer-links">
+                <strong>Product</strong>
+                <ul>
+                    <li><a href="#">Grocery</a></li>
+                    <li><a href="#">Packages</a></li>
+                    <li><a href="#">Popular</a></li>
+                    <li><a href="#">New</a></li>
+                </ul>
+            </div>
+            <!--links------------------------->
+            <div class="footer-links">
+                <strong>Category</strong>
+                <ul>
+                    <li><a href="#">Beauty</a></li>
+                    <li><a href="#">Vegetables</a></li>
+                    <li><a href="#">Baby</a></li>
+                    <li><a href="#">Medicine</a></li>
+                </ul>
+            </div>
+            <!--links-------------------------->
+            <div class="footer-links">
+                <strong>Contact</strong>
+                <ul>
+                    <li><a href="#">Phone : +123456789</a></li>
+                    <li><a href="#">Email : chitkaragrocery@gmail.com</a></li>
+                    <li><a href="#">Cities we serve</a></li>
+                </ul>
+				<br><p style="color: aliceblue;">Copyright ©2022 | All Rights Reserved</p>
+            </div>
+            </div>
+        </footer>
+    </body>
+</html>
+<script>
+// function showNotification(message) {
+//     const notification = document.createElement('div');
+//     notification.className = 'notification';
+//     notification.textContent = message;
+//     document.body.appendChild(notification);
+    
+//     // Remove notification after 3 seconds
+//     setTimeout(() => {
+//         notification.remove();
+//     }, 3000);
+// }
+
+function showNotification(message, isError = false) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    if (isError) {
+        notification.style.backgroundColor = '#ff4444';
+    }
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// function addToCart(productName, price, imageUrl) {
+//     fetch('/add_to_cart', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             product_name: productName,
+//             price: price,
+//             image_url: imageUrl
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.message) {
+//             showNotification('Added to cart successfully!');
+//             // Update cart count in navigation
+//             const cartCount = document.querySelector('.cart span');
+//             if (cartCount) {
+//                 cartCount.textContent = parseInt(cartCount.textContent || 0) + 1;
+//             }
+//         } else {
+//             showNotification('Error adding to cart');
+//         }
+//     })
+//     .catch(error => {
+//         showNotification('Error adding to cart');
+//         console.error('Error:', error);
+//     });
+// }
+
+
+// function addToCart(productName, price, imageUrl) {
+//     // Clean the price string by removing 'Rs. ' and converting to float
+//     const cleanPrice = parseFloat(price.replace('Rs. ', '').trim());
+    
+//     if (isNaN(cleanPrice)) {
+//         showNotification('Invalid price format', true);
+//         return;
+//     }
+
+//     fetch('/add_to_cart', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-Requested-With': 'XMLHttpRequest'  // Add this to ensure proper CSRF handling
+//         },
+//         body: JSON.stringify({
+//             product_name: productName,
+//             price: cleanPrice,
+//             image_url: imageUrl
+//         }),
+//         credentials: 'same-origin'  // Include cookies with the request
+//     })
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+//         return response.json();
+//     })
+//     .then(data => {
+//         if (data.message) {
+//             showNotification('Added to cart successfully!');
+//             // Update cart count in navigation
+//             const cartCount = document.querySelector('.cart span');
+//             if (cartCount) {
+//                 cartCount.textContent = parseInt(cartCount.textContent || 0) + 1;
+//             }
+//         } else {
+//             showNotification('Error adding to cart', true);
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         showNotification('Error adding to cart: ' + error.message, true);
+//     });
+// }
+
+// Add this to your existing script section in HomePageHTML.html
+
+function addToCart(productName, price, imageUrl) {
+    // Clean the price string and convert to number
+    const cleanPrice = parseFloat(price.replace('Rs. ', ''));
+    
+    if (isNaN(cleanPrice)) {
+        showNotification('Invalid price format', true);
+        return;
+    }
+
+    fetch('/add_to_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            product_name: productName,
+            price: cleanPrice,
+            image_url: imageUrl
+        }),
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Redirect to login if not authenticated
+                window.location.href = '/login';
+                return;
+            }
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.message) {
+            showNotification('Added to cart successfully!');
+            // Update cart count in navigation
+            const cartCount = document.querySelector('.cart span');
+            if (cartCount && data.cart_count) {
+                cartCount.textContent = data.cart_count;
+            }
+        } else {
+            showNotification('Error adding to cart', true);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error adding to cart: ' + error.message, true);
+    });
+}
+</script>

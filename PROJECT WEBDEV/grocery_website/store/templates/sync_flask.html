@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sync with Flask API{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row px-xl-5">
+        <div class="col-12">
+            <div class="bg-light p-30">
+                <h2 class="mb-4">Synchronize with Flask API</h2>
+                
+                <div class="alert alert-info">
+                    <p>This action will synchronize your Django products and categories with the Flask API.</p>
+                    <ul>
+                        <li>Any products or categories in Django that don't exist in Flask will be created in Flask.</li>
+                        <li>Existing data will not be modified.</li>
+                        <li>This operation may take some time depending on the number of items to synchronize.</li>
+                    </ul>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Start Synchronization</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary ml-2">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
